@@ -3,7 +3,7 @@ title: "Soil Information System Template"
 format: html
 page-layout: full
 search: true
-image: ./img/pit-in-maize.png
+image: ./img/pit-in-maize.jpg
 image-alt: "some soil scientists in a maize field analysing a pit (chatgpt)"
 repo-actions: [edit, issue]
 

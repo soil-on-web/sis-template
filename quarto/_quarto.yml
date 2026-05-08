@@ -6,9 +6,8 @@ project:
 
 website:
   favicon: /assets/images/favicon.svg
-  repo-url: "https://github.com/soil-on-www/sis-template"
+  repo-url: "https://github.com/soil-on-web/sis-template"
   repo-actions:
-    - edit
     - issue
   page-footer:
     left:
