@@ -1,10 +1,10 @@
 ---
-title: "Soil Data of Kenya"
+title: "Soil Information System Template"
 format: html
 page-layout: full
 search: true
-image: ./img/kenya-soil-surveyor-2.png
-image-alt: "Impact of soil erosion on dryland ecosystems"
+image: ./img/pit-in-maize.png
+image-alt: "some soil scientists in a maize field analysing a pit (chatgpt)"
 repo-actions: [edit, issue]
 
 about:
