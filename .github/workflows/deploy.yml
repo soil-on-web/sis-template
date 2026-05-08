@@ -1,0 +1,129 @@
+name: Build and Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      #
+      # Checkout monorepo
+      #
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      #
+      # Setup Node
+      #
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      #
+      # Setup Quarto
+      #
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      #
+      # Render Quarto site
+      #
+      - name: Render Quarto website
+        working-directory: quarto
+        run: |
+          quarto render
+
+      #
+      # Checkout TerriaMap
+      #
+      - name: Checkout TerriaMap
+        uses: actions/checkout@v4
+        with:
+          repository: TerriaJS/TerriaMap
+          path: terriamap
+
+      #
+      # Enable Corepack (Yarn)
+      #
+      - name: Enable Corepack
+        run: corepack enable
+
+      #
+      # Install TerriaMap dependencies
+      #
+      - name: Install TerriaMap dependencies
+        working-directory: terriamap
+        run: yarn install --frozen-lockfile
+
+      #
+      # Copy custom Terria configuration
+      #
+      - name: Copy Terria configuration
+        run: |
+          mkdir -p terriamap/wwwroot/config
+          cp -r terria-config/* terriamap/wwwroot/config/
+
+      #
+      # Build TerriaMap for GitHub Pages
+      #
+      - name: Build TerriaMap
+        working-directory: terriamap
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+        run: |
+          yarn gulp release --baseHref="/sis-template/map/"
+
+      #
+      # Assemble final Pages site
+      #
+      - name: Assemble site
+        run: |
+          mkdir public
+
+          # Quarto site goes to root
+          cp -r quarto/_site/* public/
+
+          # TerriaMap goes under /map
+          mkdir -p public/map
+          cp -r terriamap/wwwroot/* public/map/
+
+          # Optional SPA fallback
+          cp public/map/index.html public/map/404.html || true
+
+          # Disable Jekyll
+          touch public/.nojekyll
+
+      #
+      # Upload artifact
+      #
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,35 @@
+project:
+  type: website
+  render:
+    - "*.md"
+    - "*.qmd"
+
+website:
+  favicon: /assets/images/favicon.svg
+  repo-url: "https://github.com/soil-on-www/sis-template"
+  repo-actions:
+    - edit
+    - issue
+  page-footer:
+    left:
+    - text: SIS template
+
+  title: "SIS template"
+  search: true
+  navbar:
+    pinned: true
+    right:
+      - text: Home
+        file: "./index.md"
+      - text: Maps
+        file: "./map"
+      - text: About
+        file: "./about.md"
+
+format:
+  html:
+    page-layout: full
+    theme:
+      light: flatly
+      dark: darkly
+    
