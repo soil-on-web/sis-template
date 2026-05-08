@@ -69,13 +69,6 @@ jobs:
         working-directory: terriamap
         run: yarn install --frozen-lockfile
 
-      #
-      # Copy custom Terria configuration
-      #
-      - name: Copy Terria configuration
-        run: |
-          mkdir -p terriamap/wwwroot/config
-          cp -r terria-config/* terriamap/wwwroot/config/
 
       #
       # Build TerriaMap for GitHub Pages
@@ -86,6 +79,15 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=4096
         run: |
           yarn gulp release --baseHref="/sis-template/map/"
+
+      #
+      # Copy custom Terria configuration
+      #
+      - name: Copy Terria configuration
+        run: |
+          mkdir -p terriamap/wwwroot/config
+          cp -r terria-config/* terriamap/wwwroot/
+
 
       #
       # Assemble final Pages site
